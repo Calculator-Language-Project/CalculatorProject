@@ -10,6 +10,7 @@ type Var = String
 type Funct = String
 
 data Expr = LitN Int
+		  | LinD Double
           | LitB Bool
           | LitS String
           | Ref Var
@@ -65,6 +66,8 @@ modulus = Define "modulus" ["x","m"] (While (gtrthneq (Ref "x") (Ref "m")) (Set 
 expnts :: Stmt
 expnts = Define "expnts" ["x","e"] (Begin [Set "result" (LitN 1), While (GtrThn (Ref "e") (LitN 0)) (Begin [Set "result" (Mult (Ref "result") (Ref "x")), Set "e" (sub (Ref "e") (LitN 1))])]) (Ref "result")
 
+--sqrt :: stmt 
+--sqrt = Define "sqrt" ["x"] (Begin [Call "expnts" [Ref "x", LitD 0.5]]
 -- * Example Programs *
 p1 :: Stmt
 p1 = Begin [modulus,
@@ -87,6 +90,7 @@ p4 = Begin [Set "x" (LitN 5),
 
 -- * Semantics *
 data Value = I Int
+		   | D Double
            | B Bool
            | S String
            | F [Var] Stmt Expr
