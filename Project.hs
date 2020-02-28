@@ -1,5 +1,5 @@
 --Calculex
-module Project where
+module Calculex where
 
 import Prelude hiding (not, and, or, div, mod)
 import Data.Maybe
