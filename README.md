@@ -16,30 +16,26 @@ int main() {
    return 0;
 }
 
-Int tempA = a;
-Int tempB = b;
-While (b !=0)
-{
-	Int temp = a % b;
-	a = b
-	b = temp;
+void GCD(int a, int b) {
+	Cout << "GCD of "<< a <<" and "<< b <<" is ";
+	int temp = 0;
+	While (!(b == 0))
+	{
+		temp = a % b;
+		a = b;
+		b = temp;
+	}
+	Cout << a;
 }
-Cout << "GCD of "<< tempA <<" and "<< tempB <<" is "<< a;
 	
 
 Fibonacci
 void Fib(int n){
     Int t1 = 0, t2 = 1, nextTerm = 0;
-    for (int i = 1; i <= n; ++i)
+    cout << " " << t1;
+    cout << t2 << " ";
+    for (int i = 3; i <= n; ++i)
     {
-        if(i == 1){
-            cout << " " << t1;
-            continue;
-        }
-        if(i == 2) {
-            cout << t2 << " ";
-            continue;
-        }
         nextTerm = t1 + t2;
         t1 = t2;
         t2 = nextTerm;
