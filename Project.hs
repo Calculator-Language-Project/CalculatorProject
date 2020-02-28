@@ -75,6 +75,34 @@ expnts = Define "expnts" ["x","e"] (Begin [Set "result" (LitN 1), While (GtrThn 
 
 -- * Example Programs *
 -- * Good Programs *
+--Gets the 14th term of the fibonacci sequence. This value is stored in "nterm" at the end of the program.
+fib :: Stmt
+fib = Begin [mod, expnts,
+             Set "n" (LitN 14),
+             Set "t1" (LitN 0),
+             Set "t2" (LitN 1),
+             Set "nterm" (LitN 0),
+             While (lsthneq (LitN 2) (Ref "n"))
+                    (Begin
+                          [Set "nterm" (Add (Ref "t1") (Ref "t2")),
+                           Set "t1" (Ref "t2"),
+                           Set "t2" (Ref "nterm"),
+                           Set "n"  (sub (Ref "n") (LitN 1))]
+            )]
+
+--Finds the greatest common denominator of 12 and 20. This value stored in the variable "n" at the end of the program.
+gcd_calc:: Stmt
+gcd_calc = Begin
+           [mod, expnts,
+            Set "n" (LitN 12),
+            Set "x" (LitN 20),
+            While (not (eq (Ref "x") (LitN 0)))
+               (Begin
+               [Set "temp" (Call "mod" [(Ref "n"),(Ref "x")]),
+                Set "n"(Ref "x"),
+                Set "x"(Ref "temp")
+              ]
+            )]
 
 -- * Bad Programs *
 --Creating add, multiply, or greater than expressions with expressions that don't evaluate to integers.
@@ -112,34 +140,6 @@ bp7 = Begin [mod, expnts,
              Set "x" (LitN 5),
              Set "y" (LitN 9),
              Set "z" (If (LitN 5) (LitN 7) (LitN 9))]
-
--- program to increment and find first integer ("d") that 511 divides by with zero remainder ("r")
-p5 :: Stmt
-p5 = Begin [mod,
-            Set "d" (LitN 2),
-            Set "r" (LitN 1),
-            While (GtrThn (Ref "r") (LitN 0))
-              (Begin [Set "r" (Call "modulus" [(LitN 511), (Ref "d")]),
-                      Set "d" (Add (Ref "d") (LitN 1))])]
-
--- program with type error between String and Bool
-p6 :: Stmt
-p6 = Begin [Set "s1" (LitS "Hello"),
-            Set "x" (lsthn (LitN 4) (LitN 5)),
-            Set "s2" (ConcatStr (Ref "s1") (Ref "x"))]
-
-fib :: Stmt
-fib = Begin [Set "n" (LitN 14),
-             Set "t1" (LitN 0),
-             Set "t2" (LitN 1),
-             Set "nterm" (LitN 0),
-             While (lsthneq (LitN 2) (Ref "n"))
-                    (Begin
-                          [Set "nterm" (Add (Ref "t1") (Ref "t2")),
-                           Set "t1" (Ref "t2"),
-                           Set "t2" (Ref "nterm"),
-                           Set "n"  (sub (Ref "n") (LitN 1))]
-            )]
 
 -- * Semantics *
 data Value = I Int
