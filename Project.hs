@@ -237,3 +237,6 @@ stmt (Create l exps) s = case listexpstoval exps s of
 stmt (ConcatLsts nl l1 l2) s = case (getlist l1 s, getlist l2 s) of
                                   (L fl, L sl) -> Just (setlist nl (L (fl ++ sl)) s)
                                   _ -> Nothing
+
+eval :: Stmt -> Maybe State
+eval p = stmt p []
