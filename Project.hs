@@ -2,6 +2,7 @@
 module Project where
 
 import Prelude hiding (not, and, or, div, mod)
+import Data.Maybe
 
 -- * Syntax *
 
