@@ -87,8 +87,8 @@ p2 = Begin [Set "x" (LitN 100),
 p3 :: Stmt
 p3 = Begin [expnts, Set "x" (LitN 5), Set "z" (Call "expnts" [Ref "x", LitN 3])]
 
-p5 :: Stmt
-p5 = Begin [mod, expnts, Create "list" [Add (LitN 9) (LitB True),LitN 2,LitN 6,LitN 5,LitN 0,LitN 84], Create "list2" [LitN 15,LitN 76,LitN 34,LitN 16,LitN 91], ConcatLsts "newlist" "list" "list2", Set "x" (Index "newlist" 7)]
+p9 :: Stmt
+p9 = Begin [mod, expnts, Create "list" [Add (LitN 9) (LitB True),LitN 2,LitN 6,LitN 5,LitN 0,LitN 84], Create "list2" [LitN 15,LitN 76,LitN 34,LitN 16,LitN 91], ConcatLsts "newlist" "list" "list2", Set "x" (Index "newlist" 7)]
 
 --Infinite Loop
 p4 :: Stmt
@@ -97,7 +97,7 @@ p4 = Begin [Set "x" (LitN 5),
 
 -- program to increment and find first integer ("d") that 511 divides by with zero remainder ("r")
 p5 :: Stmt
-p5 = Begin [modulus,
+p5 = Begin [mod,
             Set "d" (LitN 2),
             Set "r" (LitN 1),
             While (GtrThn (Ref "r") (LitN 0))
@@ -108,7 +108,7 @@ p5 = Begin [modulus,
 p6 :: Stmt
 p6 = Begin [Set "s1" (LitS "Hello"),
             Set "x" (lsthn (LitN 4) (LitN 5)),
-            Set "s2" (Concat (Ref "s1") (Ref "x"))]
+            Set "s2" (ConcatStr (Ref "s1") (Ref "x"))]
 
 fib :: Stmt
 fib = Begin [Set "n" (LitN 3),
