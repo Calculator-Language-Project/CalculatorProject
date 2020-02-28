@@ -100,6 +100,18 @@ p6 = Begin [Set "s1" (LitS "Hello"),
             Set "x" (lsthn (LitN 4) (LitN 5)),
             Set "s2" (Concat (Ref "s1") (Ref "x"))]
 
+fib :: Stmt
+fib = Begin [Set "n" (LitN 3)
+             Set "t1" (LitN 0),
+             Set "t2" (LitN 1),
+             Set "nextTerm" (LitN 0),
+             While (lsthneq (Ref "nextTerm") (Ref "n"))
+                    (Begin
+                          [Set "nextTerm" (Add ((Ref "t1") (Ref "t2")),
+                           Set (Ref "t1") (Ref "t2"),
+                           Set (Ref "t2") (Ref "nextTerm")]
+            )]
+
 -- * Semantics *
 data Value = I Int
            | B Bool
