@@ -21,7 +21,7 @@ data Expr = LitN Int
           | ConcatStr Expr Expr
           | If Expr Expr Expr
           | Call Funct [Expr]
-          | Index List Int
+          | Index List Expr
   deriving(Eq, Show)
 
 data Stmt = Set Var Expr
@@ -74,27 +74,44 @@ expnts :: Stmt
 expnts = Define "expnts" ["x","e"] (Begin [Set "result" (LitN 1), While (GtrThn (Ref "e") (LitN 0)) (Begin [Set "result" (Mult (Ref "result") (Ref "x")), Set "e" (sub (Ref "e") (LitN 1))])]) (Ref "result")
 
 -- * Example Programs *
-p1 :: Stmt
-p1 = Begin [mod,
-            (Set "x" (Add (LitN 5) (LitN 6))),
-            (Set "r" (Add (LitN 23) (LitN 8))),
-            (Set "z" (Add (LitN 2) (LitN 4))),
-            (Set "y" (Call "mod" [(Ref "r"), (LitN 7)]))]
+-- * Good Programs *
 
-p2 :: Stmt
-p2 = Begin [Set "x" (LitN 100),
-            Set "x" (div (Ref "x") (LitN (-10)))]
+-- * Bad Programs *
+--Creating add, multiply, or greater than expressions with expressions that don't evaluate to integers.
+bp1:: Stmt
+bp1 = Begin [mod, expnts,
+             Set "x" (Add (LitN 5) (LitB True)),
+             Set "y" (Mult (LitS "a") (LitN 5)),
+             Set "z" (GtrThn (LitB False) (LitN 7))]
 
-p3 :: Stmt
-p3 = Begin [expnts, Set "x" (LitN 5), Set "z" (Call "expnts" [Ref "x", LitN 3])]
+--Trying to concatenate expressions that don't evaluate to strings.
+bp2 = Begin [mod, expnts,
+             Set "x" (ConcatStr (LitS "a") (LitN 5))]
 
-p9 :: Stmt
-p9 = Begin [mod, expnts, Create "list" [Add (LitN 9) (LitB True),LitN 2,LitN 6,LitN 5,LitN 0,LitN 84], Create "list2" [LitN 15,LitN 76,LitN 34,LitN 16,LitN 91], ConcatLsts "newlist" "list" "list2", Set "x" (Index "newlist" 7)]
+--Creating an If expression with a non-boolean value as the conditional.
+bp3 = Begin [mod, expnts,
+             Set "x" (If (LitN 5) (LitN 3) (LitN 7))]
 
---Infinite Loop
-p4 :: Stmt
-p4 = Begin [Set "x" (LitN 5),
-            While (GtrThn (LitN 5) (LitN 3)) (Begin [Set "x" (Add (Ref "x") (LitN 1))])]
+--Trying to use a variable, function, or list that doesn't exist.
+bp4 = Begin [mod, expnts,
+             Set "x" (Ref "y"),
+             Set "y" (Call "funct" [(LitN 5)]),
+             Set "z" (Index "list" (LitN 5))]
+
+--Trying to index a list with an expression that doesn't evaluate to an integer.
+bp5 = Begin [mod, expnts,
+             Create "list" [LitN 5, LitN 8, LitN 3],
+             Set "x" (Index "list" (LitB True))]
+
+--Trying to create a while loop with an expression that doesn't evaluate to a boolean value.
+bp6 = Begin [mod, expnts,
+             While (LitN 4) (Begin [Set "x" (LitN 10)])]
+
+--Any of the statements in a program contain an error.
+bp7 = Begin [mod, expnts,
+             Set "x" (LitN 5),
+             Set "y" (LitN 9),
+             Set "z" (If (LitN 5) (LitN 7) (LitN 9))]
 
 -- program to increment and find first integer ("d") that 511 divides by with zero remainder ("r")
 p5 :: Stmt
@@ -113,14 +130,14 @@ p6 = Begin [Set "s1" (LitS "Hello"),
 
 fib :: Stmt
 fib = Begin [Set "n" (LitN 3),
-             Set "t1" (LitN 0),
-             Set "t2" (LitN 1),
-             Set "nextTerm" (LitN 0),
-             While (lsthneq (Ref "nextTerm") (Ref "n"))
+              Set "t1" (LitN 0),
+              Set "t2" (LitN 1),
+              Set "nextTerm" (LitN 0),
+              While (lsthneq (Ref "nextTerm") (Ref "n"))
                     (Begin
                           [Set "nextTerm" (Add (Ref "t1") (Ref "t2")),
-                           Set "t1" (Add (Ref "t1") (Ref "t2")),
-                           Set "t2" (Add (Ref "t2") (Ref "nextTerm"))]
+                            Set "t1" (Add (Ref "t1") (Ref "t2")),
+                            Set "t2" (Add (Ref "t2") (Ref "nextTerm"))]
             )]
 
 -- * Semantics *
@@ -212,8 +229,10 @@ expr (Call f exps) s = case getfunct f s of
                                              Just s -> expr re s
                                              Nothing -> Error
                           _ -> Error
-expr (Index l i) s = case getlist l s of
-                        L is -> is!!i
+expr (Index l e) s = case getlist l s of
+                        L is -> case expr e s of
+                                   I i -> is!!i
+                                   _ -> Error
                         _ -> Error
 
 stmt :: Stmt -> State -> Maybe State
