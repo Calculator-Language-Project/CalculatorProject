@@ -1,7 +1,7 @@
 # CalculatorProject
 
 
-            
+```            
 Euclid Algorithm
 int gcd(int a, int b) {
    if (b == 0)
@@ -46,3 +46,4 @@ void Fib(int n){
         cout << nextTerm << " ";
     }
 }
+```
