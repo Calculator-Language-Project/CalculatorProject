@@ -101,15 +101,15 @@ p6 = Begin [Set "s1" (LitS "Hello"),
             Set "s2" (Concat (Ref "s1") (Ref "x"))]
 
 fib :: Stmt
-fib = Begin [Set "n" (LitN 3)
+fib = Begin [Set "n" (LitN 3),
              Set "t1" (LitN 0),
              Set "t2" (LitN 1),
              Set "nextTerm" (LitN 0),
              While (lsthneq (Ref "nextTerm") (Ref "n"))
                     (Begin
-                          [Set "nextTerm" (Add ((Ref "t1") (Ref "t2")),
-                           Set (Ref "t1") (Ref "t2"),
-                           Set (Ref "t2") (Ref "nextTerm")]
+                          [Set "nextTerm" (Add (Ref "t1") (Ref "t2")),
+                           Set "t1" (Add (Ref "t1") (Ref "t2")),
+                           Set "t2" (Add (Ref "t2") (Ref "nextTerm"))]
             )]
 
 -- * Semantics *
