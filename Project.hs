@@ -123,6 +123,22 @@ fib = Begin [Set "n" (LitN 3),
                            Set "t2" (Add (Ref "t2") (Ref "nextTerm"))]
             )]
 
+gcd_calc:: Stmt 
+gcd_calc = Begin
+           [mod, 
+		    Set "n" (LitN 12),
+			Set "x" (LitN 20), 
+			While (not (eq (Ref "x") (LitN 0)))
+				(Begin 
+					[Set "temp" (Call "mod" [(Ref "n"),(Ref "x")]),
+					 Set "n"(Ref "x"),
+					 Set "x"(Ref "temp") 
+					]
+            
+            )]	
+			
+			
+			
 -- * Semantics *
 data Value = I Int
            | B Bool
